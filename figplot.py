@@ -18,7 +18,7 @@ def figplot(state_space_coverage, action_space_coverage):
     axHisty = plt.axes(rect_histy)
     axHist_action = plt.axes(rect_hist_action)
 
-    axScatter.scatter(state_space_coverage[:,0],state_space_coverage[:,1],marker='.',alpha=0.3, color=cmap(0));
+    axScatter.scatter(state_space_coverage[:,0],state_space_coverage[:,1],marker='.',alpha=0.1, color=cmap(0));
     axScatter.set_xlabel("Battery")
     axScatter.set_ylabel("Harvested Energy")
 
