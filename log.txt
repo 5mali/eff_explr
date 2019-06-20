@@ -1,2 +1,3 @@
+NN_A: change random action to pure e-greedy type from e-delta
 NN_v1: Reward Function v1, e-delta, show state-space heatmap
 
