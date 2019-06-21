@@ -3,9 +3,9 @@ from scipy.stats import gaussian_kde
 from scipy.interpolate import interpn
 import numpy as np
 
-def figplot(state_space_coverage, action_space_coverage):
-    fig = plt.figure(figsize=(5,5))
-    cmap = plt.get_cmap("tab10")
+def figplot(state_space_coverage, action_space_coverage, explore_action_space_coverage):
+    fig = plt.figure(figsize=(7,5))
+    cmap = plt.get_cmap("tab20")
     # definitions for the axes
     left, width = 0.1, 0.65
     bottom, height = 0.1, 0.65
@@ -14,12 +14,14 @@ def figplot(state_space_coverage, action_space_coverage):
     rect_scatter = [left, bottom, width, height]
     rect_histx = [left, bottom_h, width, 0.2]
     rect_histy = [left_h, bottom, 0.2, height]
-    rect_hist_action = [left+1, bottom, width, height]
+    rect_hist_action = [left_h+0.3, bottom, width, height]
+#     rect_xplr_action = [left_h+0.3+width+0.15,bottom, width, height]
 
     axScatter = plt.axes(rect_scatter)
     axHistx = plt.axes(rect_histx)
     axHisty = plt.axes(rect_histy)
     axHist_action = plt.axes(rect_hist_action)
+#     axExplr_action = plt.axes(rect_xplr_action)
     
     batt_state = state_space_coverage[:,0]
     henergy_state = state_space_coverage[:,1]
@@ -33,20 +35,39 @@ def figplot(state_space_coverage, action_space_coverage):
 #     idx = z.argsort()
 #     batt_state, henergy_state, z = batt_state[idx], henergy_state[idx], z[idx]
 
-    axScatter.scatter(batt_state,henergy_state,marker='.',s = 0.5, alpha=0.3, c=cmap(0));
+    axScatter.scatter(batt_state,henergy_state,marker='.',s = 30, alpha=0.1, c=cmap(6));
     axScatter.set_xlabel("Battery")
     axScatter.set_ylabel("Harvested Energy")
+    plt.text(0.5,0.5,
+             s = r'$\sigma$'+" = "+ str(np.around(np.var(state_space_coverage), decimals=2)), 
+             transform = axScatter.transAxes)
 
 
-    axHistx.hist(state_space_coverage[:,0],rwidth=1.0,bins=100,color=cmap(1),log=not False,histtype='step');
+    axHistx.hist(state_space_coverage[:,0],bins=100,color=cmap(1),log=not False,histtype='step');
     axHistx.tick_params(labelbottom=False)
 
-    axHisty.hist(state_space_coverage[:,1],bins=100,rwidth=1.0,orientation='horizontal',color=cmap(2),log=not False,histtype='step');        axHisty.tick_params(labelleft=False)
+    axHisty.hist(state_space_coverage[:,1],bins=100,orientation='horizontal',color=cmap(3),log=not False,histtype='step');        axHisty.tick_params(labelleft=False)
 
-    axHist_action.hist(action_space_coverage,bins = 10,rwidth=0.95,color=cmap(3))
+    axHist_action.hist([action_space_coverage],
+                       label = ("Executed Actions"),
+                       bins = 10,stacked=True,rwidth=0.95,
+                       color=[cmap(0)],
+                       log=not False)
+    axHist_action.hist([explore_action_space_coverage],
+                       label = ("Exploratory Actions"),
+                       bins = 10,stacked=True,rwidth=0.95,
+                       color=[cmap(2)],
+                       log=not False)
+        
     axHist_action.set_xlabel("Duty Cycle")
     axHist_action.yaxis.set_label_position("right")
     axHist_action.yaxis.tick_right()
+    axHist_action.legend(loc='upper center', bbox_to_anchor=(0.5, height+0.5), fancybox=True, shadow=True, ncol=2) 
+    
+#     axExplr_action.hist(explore_action_space_coverage,bins = 10,rwidth=0.95,color=cmap(4),log=not False)
+#     axExplr_action.set_xlabel("Random Exploratory Duty Cycle")
+# #     axExplr_action.yaxis.set_label_position("right")
+# #     axExplr_action.yaxis.tick_right()
     
     plt.show()
     
