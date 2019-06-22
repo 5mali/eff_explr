@@ -5,7 +5,7 @@ import numpy as np
 
 def figplot(state_space_coverage, action_space_coverage):
     fig = plt.figure(figsize=(5,5))
-    cmap = plt.get_cmap("tab10")
+    cmap = plt.get_cmap("tab20")
     # definitions for the axes
     left, width = 0.1, 0.65
     bottom, height = 0.1, 0.65
@@ -33,17 +33,28 @@ def figplot(state_space_coverage, action_space_coverage):
 #     idx = z.argsort()
 #     batt_state, henergy_state, z = batt_state[idx], henergy_state[idx], z[idx]
 
-    axScatter.scatter(batt_state,henergy_state,marker='.',s = 0.5, alpha=0.3, c=cmap(0));
+    axScatter.scatter(batt_state,henergy_state,marker='.',s = 30, alpha=0.1, c=cmap(6));
     axScatter.set_xlabel("Battery")
     axScatter.set_ylabel("Harvested Energy")
+    plt.text(0.5,0.5,
+             s = r'$\sigma$'+" = "+ str(np.around(np.var(state_space_coverage), decimals=2)), 
+             transform = axScatter.transAxes)
 
-
+    axScatter.set_xlim([0, 1])
+    axScatter.set_ylim([0, 1])
+    
+    
     axHistx.hist(state_space_coverage[:,0],rwidth=1.0,bins=100,color=cmap(1),log=not False,histtype='step');
     axHistx.tick_params(labelbottom=False)
+    axHistx.set_xlim([0, 1])
 
-    axHisty.hist(state_space_coverage[:,1],bins=100,rwidth=1.0,orientation='horizontal',color=cmap(2),log=not False,histtype='step');        axHisty.tick_params(labelleft=False)
 
-    axHist_action.hist(action_space_coverage,bins = 10,rwidth=0.95,color=cmap(3))
+    axHisty.hist(state_space_coverage[:,1],bins=100,rwidth=1.0,orientation='horizontal',color=cmap(2),log=not False,histtype='step');
+    axHisty.tick_params(labelleft=False)    
+    axHisty.set_ylim([0, 1])
+
+
+    axHist_action.hist(action_space_coverage,bins = 10,rwidth=0.95,color=cmap(0),log = not False)
     axHist_action.set_xlabel("Duty Cycle")
     axHist_action.yaxis.set_label_position("right")
     axHist_action.yaxis.tick_right()
